@@ -1,54 +1,57 @@
-RECIPES = {
+class Warehouse:
+    def __init__(self, initial_items=None, recipes=None):
+        if initial_items is None:
+            self.items = {}
+        else:
+            self.items = initial_items
+        
+        if recipes is None:
+            self.recipes = {}
+        else:
+            self.recipes = recipes
+    
+    def get_quantity(self, item_name):
+        if item_name in self.items:
+            return self.items[item_name]
+        else:
+            return 0
+    
+    def remove_item(self, item_name, quantity):
+        if item_name in self.items and self.items[item_name] >= quantity:
+            self.items[item_name] -= quantity
+            return True
+        else:
+            return False
+    
+    def cook(self, dish_name):
+        if dish_name not in self.recipes:
+            return {"статус": "Ошибка", "причина": f"Рецепт '{dish_name}' не найден"}
+    
+        recipe = self.recipes[dish_name]
+
+        for ingredient, amount in recipe.items():
+            if self.get_quantity(ingredient) < amount:
+                return {"статус": "Ошибка", "причина": f"Не хватает {ingredient}"}
+    
+        for ingredient, amount in recipe.items():
+            self.remove_item(ingredient, amount)
+
+        return {"блюдо": dish_name, "статус": "Готов"}
+
+
+# Глобальная книга рецептов (можно переиспользовать)
+DEFAULT_RECIPES = {
     "омлет": {"яйца": 2, "молоко": 1},
     "салат": {"огурцы": 2, "помидоры": 1, "сметана": 1}
 }
 
-# Наш склад
-inventory = {
-    "молоко": 3,
-    "яйца": 10,
-    "сыр": 1,
-    "огурцы": 5,
-    "помидоры": 4,
-    "сметана": 2
-}
+# Создаём склад с книгой рецептов
+warehouse = Warehouse(
+    {"яйца": 10, "молоко": 3, "огурцы": 5, "помидоры": 4, "сметана": 2},
+    recipes=DEFAULT_RECIPES
+)
 
-def get_quantity(warehouse, item_name):
-    if item_name in warehouse:
-        return warehouse[item_name]
-    else:
-        return 0
-    
-
-def remove_item(warehouse, item_name, quantity):
-    if item_name in warehouse and warehouse[item_name] >= quantity:
-        warehouse[item_name] -= quantity
-        return True
-    else:
-        return False
-
-
-def cook(warehouse, dish_name):
-    # 1. Проверка существования рецепта
-    if dish_name not in RECIPES:
-        return {"статус": "Ошибка", "причина": f"Рецепт '{dish_name}' не найден"}
-    
-    recipe = RECIPES[dish_name]
-
-    # 2. Проверка наличия ВСЕХ ингредиентов
-    for ingredient, amount in recipe.items():
-        if get_quantity(warehouse, ingredient) < amount:
-            return {"статус": "Ошибка", "причина": f"Не хватает {ingredient}"}
-    
-    # 3. Если мы здесь, значит ВСЁ в наличии — списываем
-    for ingredient, amount in recipe.items():
-        remove_item(warehouse, ingredient, amount)
-
-    # 4. Успех
-    return {"блюдо": dish_name, "статус": "Готов"}
-
-
-# Проверяем работу функций
-print(remove_item(inventory, 'молоко', 1))
-print(cook(inventory, 'салат'))
-print(cook(inventory, 'не салат'))
+print(warehouse.cook("омлет"))
+print(warehouse.get_quantity("яйца"))
+print(warehouse.get_quantity("молоко"))
+print(warehouse.cook("борщ"))
