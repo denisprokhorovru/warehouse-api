@@ -1,3 +1,6 @@
+import json
+
+
 class Warehouse:
     def __init__(self, initial_items=None, recipes=None):
         if initial_items is None:
@@ -44,6 +47,17 @@ class Warehouse:
         else:
             self.items[item_name] = quantity
         return True
+    
+    def save_to_file(self, filename):
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(self.items, f, ensure_ascii=False, indent=4)
+
+    def load_from_file(self, filename):
+        try:
+            with open(filename, 'r', encoding='utf-8') as f:
+                self.items = json.load(f)
+        except FileNotFoundError:
+            self.items = {}
 
 
 
@@ -53,15 +67,18 @@ DEFAULT_RECIPES = {
     "салат": {"огурцы": 2, "помидоры": 1, "сметана": 1}
 }
 
-# Создаём склад с книгой рецептов
-warehouse = Warehouse(
-    {"яйца": 10, "молоко": 3, "огурцы": 5, "помидоры": 4, "сметана": 2},
-    recipes=DEFAULT_RECIPES
-)
+# Создаём склад и пополняем
+warehouse = Warehouse(recipes=DEFAULT_RECIPES)
+warehouse.add_item("яйца", 10)
+warehouse.add_item("молоко", 5)
 
-print(warehouse.cook("омлет"))
-print(warehouse.get_quantity("яйца"))
-print(warehouse.get_quantity("молоко"))
-print(warehouse.cook("борщ"))
-print(warehouse.add_item("яйца", 5))
-print(warehouse.get_quantity("яйца"))
+# Сохраняем в файл
+warehouse.save_to_file("warehouse_data.json")
+
+# Создаём НОВЫЙ склад и загружаем данные из файла
+new_warehouse = Warehouse(recipes=DEFAULT_RECIPES)
+new_warehouse.load_from_file("warehouse_data.json")
+
+# Проверяем, что данные загрузились
+print(new_warehouse.get_quantity("яйца"))  # → 10
+print(new_warehouse.get_quantity("молоко"))  # → 5
