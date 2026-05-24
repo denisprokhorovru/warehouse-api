@@ -37,6 +37,14 @@ class Warehouse:
             self.remove_item(ingredient, amount)
 
         return {"блюдо": dish_name, "статус": "Готов"}
+    
+    def add_item(self, item_name, quantity):
+        if item_name in self.items:
+            self.items[item_name] += quantity
+        else:
+            self.items[item_name] = quantity
+        return True
+
 
 
 # Глобальная книга рецептов (можно переиспользовать)
@@ -55,3 +63,5 @@ print(warehouse.cook("омлет"))
 print(warehouse.get_quantity("яйца"))
 print(warehouse.get_quantity("молоко"))
 print(warehouse.cook("борщ"))
+print(warehouse.add_item("яйца", 5))
+print(warehouse.get_quantity("яйца"))
