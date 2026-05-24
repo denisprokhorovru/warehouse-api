@@ -60,25 +60,89 @@ class Warehouse:
             self.items = {}
 
 
-
 # Глобальная книга рецептов (можно переиспользовать)
 DEFAULT_RECIPES = {
     "омлет": {"яйца": 2, "молоко": 1},
     "салат": {"огурцы": 2, "помидоры": 1, "сметана": 1}
 }
 
-# Создаём склад и пополняем
-warehouse = Warehouse(recipes=DEFAULT_RECIPES)
-warehouse.add_item("яйца", 10)
-warehouse.add_item("молоко", 5)
 
-# Сохраняем в файл
-warehouse.save_to_file("warehouse_data.json")
+def main():
+    # Создаём склад
+    warehouse = Warehouse(recipes=DEFAULT_RECIPES)
+    warehouse.load_from_file("warehouse_data.json")
+    
+    print("Добро пожаловать в систему управления складом!")
+    print("Доступные команды: остаток, добавить, приготовить, рецепты, склад, выход")
+    
+    while True:
+        command = input("\nВведите команду: ").strip().lower()
+        parts = command.split()
+        
+        if not parts:
+            continue
+        
+        if parts[0] == "выход":
+            print("До свидания!")
+            break
+        
+        elif parts[0] == "остаток":
+            if len(parts) < 2:
+                print("Укажите товар: остаток <название>")
+                continue
+            item = parts[1]
+            qty = warehouse.get_quantity(item)
+            print(f"Товар: {item}, Количество: {qty}")
+        
+        elif parts[0] == "добавить":
+            if len(parts) < 3:
+                print("Ошибка! Формат команды: добавить <название> <количество>")
+                continue
+                
+            item_name = parts[1]
+            
+            try:
+                quantity = int(parts[2])
+            except ValueError:
+                print("Ошибка! Количество должно быть целым числом.")
+                continue
+        
+            warehouse.add_item(item_name, quantity)
+            print(f"Успешно добавлено: {item_name} в количестве {quantity}")
+ 
+        elif parts[0] == "приготовить":
+            if len(parts) < 2:
+                print("Ошибка! Формат команды: приготовить <название рецепта>")
+                continue
 
-# Создаём НОВЫЙ склад и загружаем данные из файла
-new_warehouse = Warehouse(recipes=DEFAULT_RECIPES)
-new_warehouse.load_from_file("warehouse_data.json")
+            result = warehouse.cook(parts[1])
+            
+            if result["статус"] == "Ошибка":
+                print(f"Ошибка! Причина {result['причина']}")
+            else:
+                print(f"Блюдо {result['блюдо']} успешно приготовлено!")
 
-# Проверяем, что данные загрузились
-print(new_warehouse.get_quantity("яйца"))  # → 10
-print(new_warehouse.get_quantity("молоко"))  # → 5
+        
+        elif parts[0] == "рецепты":
+            if not warehouse.recipes:
+                print("Нет доступных рецептов.")
+            else:
+                for recipe_name in warehouse.recipes.keys():
+                    print(f"Доступный рецепт: {recipe_name}")
+        
+        elif parts[0] == "склад":
+            if not warehouse.items:
+                print("Склад пуст.")
+            else:
+                for name, quantity in warehouse.items.items():
+                    print(f"Текущий склад: {name} = {quantity}")
+        
+        else:
+            print(f"Неизвестная команда: {parts[0]}")
+        
+        # Сохраняем после каждого действия
+        warehouse.save_to_file("warehouse_data.json")
+
+
+if __name__ == "__main__":
+    main()
