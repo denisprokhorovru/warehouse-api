@@ -9,23 +9,23 @@ API для управления складом и приготовления б�
 
 ## Запуск
 
-1. Клонируйте репозиторий:
-   ```bash
-   git clone https://github.com/denisprokhorovru/warehouse-api.git
-   cd warehouse-api
+1. Клонируйте репозиторий:  
+   `git clone https://github.com/denisprokhorovru/warehouse-api.git`  
+   `cd warehouse-api`
 
-2. Создайте и активируйте виртуальное окружение:
-    python -m venv .venv
-    source .venv/Scripts/activate  # Windows
-    # source .venv/bin/activate    # Mac/Linux
+2. Создайте и активируйте виртуальное окружение:  
+   `python -m venv .venv`  
+   `source .venv/Scripts/activate` *(Windows)*  
+   `source .venv/bin/activate` *(Mac/Linux)*
 
-3. Установите зависимости:
-    pip install fastapi uvicorn
+3. Установите зависимости:  
+   `pip install -r requirements.txt`
 
-4. Запустите сервер:
-    uvicorn server:app --reload
+4. Запустите сервер:  
+   `uvicorn server:app --reload`
 
-5. Откройте документацию API: http://127.0.0.1:8000/docs
+5. Откройте документацию API:  
+   [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ## 🔌 API Endpoints
 
@@ -47,6 +47,5 @@ API для управления складом и приготовления б�
 
 ## Консольная версия
 
-Также доступен консольный интерфейс:
-    python main.py
-
+Также доступен консольный интерфейс:  
+`python main.py`
