@@ -1,0 +1,4 @@
+.venv/
+pycache/
+*.pyc
+warehouse_data.json
