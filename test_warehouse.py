@@ -111,7 +111,5 @@ def test_cook_unknown_dish(full_warehouse):
 
 
 def test_add_to_empty_warehouse(empty_warehouse):
-    # 1. Добавляем товар
     empty_warehouse.add_item("хлеб", 5)
-    # 2. Проверяем, что хлеб есть и его ровно 5
     assert empty_warehouse.get_quantity("хлеб") == 5

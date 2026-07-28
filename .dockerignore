@@ -1,5 +1,6 @@
-.venv/
-pycache/
+.venv
+__pycache__
 *.pyc
+.git
 warehouse_data.json
 .env
